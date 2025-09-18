@@ -4,6 +4,7 @@ let gameFinishedFlag = false
 
 const divGameState = document.querySelector(".game-state");
 const pGameScore = document.querySelector("p");
+const ulGameCondition = document.querySelector(".game-condition")
 const rock =  document.querySelector('#rock');
 const paper =  document.querySelector('#paper');
 const scissor =  document.querySelector('#scissor');
@@ -66,6 +67,7 @@ function gameFinished(){
 function restartTheGame(){
     gameFinishedFlag = false;
     updateScore(4);
+    while(ulGameCondition.firstChild) ulGameCondition.removeChild(ulGameCondition.firstChild);
     const h1GameState = document.querySelector(".h1-game-state");
     const btnGameState = document.querySelector(".btn-game-state");
     console.log("Game Restarted")
@@ -77,28 +79,35 @@ function restartTheGame(){
 
 
 function updateScore(state, humanChoice, compChoice){
+    const liGameCondition  = document.createElement('li');
+    let text = '';
+
     switch (state) {
         case 1:
-            console.log("Its a Tie!!! Both gets points")
+            text = "Its a Tie!!! Both gets points";
             humanScore++
             computerScore++
             break;
         case 2:
-            console.log(`You won this round, as Your: '${humanChoice}' beats Computers: '${compChoice}'`)
+            text = `You won this round, as Your: '${humanChoice}' beats Computers: '${compChoice}'`;
             humanScore++
             break;
         case 3:
-            console.log(`You lost this round, as Computer chose: '${compChoice}' that beats Your: '${humanChoice}'`)
+            text = `You lost this round, as Computer chose: '${compChoice}' that beats Your: '${humanChoice}'`;
             computerScore++
             break;
         case 4:
-            console.log(`THE GAME HAS BEEN RESTARTED`)
+            text = `THE GAME HAS BEEN RESTARTED`;
             computerScore = 0;
             humanScore = 0;
             break
         default:
             break;
     }
+
+    liGameCondition.textContent = text;
+
+    ulGameCondition.appendChild(liGameCondition);
 
     pGameScore.textContent = `Game Score: ${humanScore} : ${computerScore}`;
 }
