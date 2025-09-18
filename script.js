@@ -10,7 +10,6 @@ const scissor =  document.querySelector('#scissor');
 
 console.log(pGameScore);
 
-
 rock.addEventListener('click', () => {playRound('r', getComputerChoice())})
 paper.addEventListener('click', () => {playRound('p', getComputerChoice())})
 scissor.addEventListener('click', () => { playRound('s', getComputerChoice())})
@@ -40,12 +39,17 @@ function getHumanChoice(){ //A dialog box appears and expects an answer of 'r', 
     }
 }
 
-function updateH1(string){
+function updateGameState(string){
     const h1GameState = document.createElement('h1');
-    console.log()
     h1GameState.textContent = string;
+    h1GameState.classList.add("h1-game-state")
+    const btnGameState = document.createElement('button');
+    btnGameState.textContent = "Restart the Game";
+    btnGameState.classList.add("btn-game-state")
+    btnGameState.addEventListener('click', () => restartTheGame())
 
     divGameState.appendChild(h1GameState)
+    divGameState.appendChild(btnGameState)
 }
 
 function stateOfWin(){
@@ -56,7 +60,19 @@ function stateOfWin(){
 function gameFinished(){
     console.log("GAME FINISHED")
     gameFinishedFlag = true
-    updateH1(stateOfWin())
+    updateGameState(stateOfWin())
+}
+
+function restartTheGame(){
+    gameFinishedFlag = false;
+    updateScore(4);
+    const h1GameState = document.querySelector(".h1-game-state");
+    const btnGameState = document.querySelector(".btn-game-state");
+    console.log("Game Restarted")
+    humanScore = 0;
+    computerScore = 0;
+    divGameState.removeChild(h1GameState);
+    divGameState.removeChild(btnGameState)
 }
 
 
@@ -68,13 +84,18 @@ function updateScore(state, humanChoice, compChoice){
             computerScore++
             break;
         case 2:
-            console.log(`You won this round, as ${humanChoice} beats ${compChoice}`)
+            console.log(`You won this round, as Your: '${humanChoice}' beats Computers: '${compChoice}'`)
             humanScore++
             break;
         case 3:
-            console.log(`You lost this round, as ${compChoice} beats ${humanChoice}`)
+            console.log(`You lost this round, as Computer chose: '${compChoice}' that beats Your: '${humanChoice}'`)
             computerScore++
             break;
+        case 4:
+            console.log(`THE GAME HAS BEEN RESTARTED`)
+            computerScore = 0;
+            humanScore = 0;
+            break
         default:
             break;
     }
@@ -82,11 +103,8 @@ function updateScore(state, humanChoice, compChoice){
     pGameScore.textContent = `Game Score: ${humanScore} : ${computerScore}`;
 }
 function playRound(humanChoice, compChoice){ //Function to check who won? It first check if its a Tie, if true, both gets a point. Then checks if the human player beats the computer, if true, human get a point. If all condition fails, the computer gets a point
-    if(computerScore === 5 || humanScore === 5){
-        if(!gameFinishedFlag){
-            gameFinished()
-        }       
-    } else {
+    
+    if (computerScore <= 4 && humanScore <= 4){
         console.log(`You Chose '${humanChoice}' and the Computer Chose '${compChoice}'`)
 
         if(humanChoice == compChoice){
@@ -98,6 +116,11 @@ function playRound(humanChoice, compChoice){ //Function to check who won? It fir
         else{
             updateScore(3, humanChoice, compChoice)
         }
-        console.log(`Current Scores: You: ${humanScore} || Computer: ${computerScore}`)
     }
+
+    if(computerScore === 5 || humanScore === 5){
+        if(!gameFinishedFlag){
+            gameFinished()
+        }       
+    } 
 }
